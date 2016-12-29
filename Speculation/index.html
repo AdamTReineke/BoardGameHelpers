@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Speculation dice bag</title>
+	<meta charset="UTF-8">
+	<style>
+	html
+	{
+		font-size:400%;
+		background:black;
+		color:white;
+	}
+	ul, button, h1 { clear:both; display:block; }
+	::selection
+	{
+		background: none;
+	}
+	ul {
+		list-style: none;
+		padding:0;
+		margin-top:0;
+	}
+	li
+	{
+		float:left;
+		display: block;
+		background-color:tan;
+		color:white;
+		border:0.1em solid saddlebrown;
+		border-radius: 50% 50%;
+		width:1em;
+		height:1em;
+		text-align:center;
+		line-height: 1em;
+		margin:0 0 0.4em 0;
+		overflow:hidden;
+		font-size:0.75em;
+		padding:0.25em;
+		transition:background-color 0.5s;
+	}
+	.present
+	{
+		background-color:green;
+		border-color:darkgreen;
+		transition-delay:0.5s;
+		transition:background-color 0.5s;
+	}
+	.past
+	{
+		opacity:0.3;
+		transition:opacity 0.5s background-color:0.5s;
+	}
+	span
+	{
+		display:none;
+	}
+	h1 {
+		font-size:0.5em;
+		margin:0;
+	}
+	button {
+		border:0.1em solid saddlebrown;
+		font-size:1em;
+		border-radius:0.25em 0.25em;
+		background:tan;
+	}
+	</style>
+	<script>
+			var $ = Document.prototype.querySelectorAll.bind(document);
+			
+			var clickHandler = function() {
+				if(noFutureTokens() || wasTrade())
+					reset();
+				moveToPast();
+				setTimeout(function() {
+					pick("#movement .future");
+					pick("#action .future");
+				}, 500);
+			}
+			
+			var noFutureTokens = function() {
+				return $(".future").length === 0;
+			}
+			
+			var wasTrade = function() {
+				var present = $("#action li.present");
+				return present.length === 1 && present.item(0).innerHTML.indexOf("Trade") !== -1;
+			}
+			
+			var reset = function() {
+				var elems = $("li");
+				for(var i =0; i < elems.length; i++)
+				{
+					elems.item(i).className = "future";
+				}
+			};
+			
+			var moveToPast = function()
+			{
+				var present = $(".present");
+				for(var i = 0; i < present.length; i++)
+				{
+					present.item(i).className = "past";
+				}
+			};
+			
+			var pick = function(selector)
+			{
+				var futureMovement = $(selector);
+				var nextMovementIndex = Math.floor(Math.random() * futureMovement.length);
+				futureMovement.item(nextMovementIndex).className = "present";
+			};
+			
+			var loadHandler = function() {
+				var button = $("button");
+				button.item(0).addEventListener("click", clickHandler);
+			};
+			document.addEventListener("DOMContentLoaded", loadHandler);
+	</script>
+</head>
+<body>
+
+<h1>Movement</h1>
+<ul id="movement">
+	<li>1</li>
+	<li>2</li>
+	<li>3</li>
+	<li>4</li>
+	<li>5</li>
+	<li>6</li>
+</ul>
+
+<h1>Action</h1>
+<ul id="action">
+	<li>🤝 <span>Trade</span></li>
+	<li>🤝 <span>Trade</span></li>
+	<li>🤝 <span>Trade</span></li>
+	<li>⏳ <span>No action</span></li>
+	<li>+1 <span>Rank</span></li>
+	<li>-1 <span>Rank</span></li>
+</ul>
+
+<button>Draw</button>
+
+</body>
+</html>
